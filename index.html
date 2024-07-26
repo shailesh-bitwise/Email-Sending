@@ -32,9 +32,41 @@
             right: 20px;
             z-index: 1050;
         }
+        .info-card {
+            position: absolute;
+            top: 50px;
+            left: 20px;
+            max-width: 250px;
+            padding: 15px;
+            background-color: #f1f1f1;
+            box-shadow: 0 0 10px rgba(0, 0, 0, 0.1);
+            border-radius: 8px;
+        }
     </style>
 </head>
 <body>
+    <div class="info-card">
+        <div class="info-card">
+        <title><h5>Important Information</h5></title>
+        <p>To get your app password:</p>
+        <ol>
+            <li>• For Gmail:</li>
+            <li>1.Enable 2-Step Verification:</li>
+            <li>2.Go to your Google Account.</li>
+            <li>3.Select "Security" in the navigation panel.</li>
+            <li>4.Under "Signing in to Google," select "2-Step Verification" and set it up.</li>
+
+            <li>• Generate an App Password:</li>
+            <li>1. After enabling 2-Step Verification, go back to the "Security" section of your Google Account.</li>
+            <li>2. Under "Signing in to Google," select "App passwords."</li>
+            <li>3. You might need to sign in again.</li>
+            <li>4. At the bottom, choose "Select app" and choose the app you’re using (or select "Other (Custom name)" and enter your custom app name).</li>
+            <li>5. Select "Generate."</li>
+            <li>6. You’ll see a 16-character app password. Copy this password.</li>
+            <li>6. And paste it in the App password text box.</li>
+        </ol>
+    </div>
+
     <div class="container">
         <h2>Send Email Form</h2>
         <form id="emailForm">
@@ -48,7 +80,7 @@
             </div>
             <div class="form-group">
                 <label for="password">App Password:</label>
-                <input type="password" class="form-control" id="password" name="password">
+                <input type="password" class="form-control" id="password" name="password" required>
             </div>
             <div class="form-group">
                 <label for="subject">Subject:</label>
