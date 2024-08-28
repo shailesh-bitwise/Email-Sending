@@ -1,0 +1,159 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Free Email Sending Service</title>
+    <link rel="icon" type="image/x-icon" href="https://storage.live.com/users/0x0ea74822dffda99b/myprofile/expressionprofile/profilephoto:UserTileStatic/p?ck=1&ex=720&sid=1C20CBE80D7761252A9CDF380C6E60CF&fofoff=1">
+    <link href="https://maxcdn.bootstrapcdn.com/bootstrap/4.5.2/css/bootstrap.min.css" rel="stylesheet">
+    <style>
+        body {
+            background-color: #f8f9fa;
+        }
+        .container {
+            max-width: 600px;
+            margin: 50px auto;
+            padding: 30px;
+            background-color: white;
+            box-shadow: 0 0 10px rgba(0, 0, 0, 0.1);
+            border-radius: 8px;
+        }
+        h2 {
+            margin-bottom: 20px;
+        }
+        .form-group {
+            margin-bottom: 15px;
+        }
+        .btn {
+            width: 100%;
+        }
+        #toast-container {
+            position: fixed;
+            top: 20px;
+            right: 20px;
+            z-index: 1050;
+        }
+        .info-card {
+            max-width: 700px;
+            padding: 15px;
+            background-color: #f1f1f1;
+            box-shadow: 0 0 10px rgba(0, 0, 0, 0.1);
+            border-radius: 8px;
+            margin-bottom: 20px;
+        }
+        .info-card h5 {
+            margin-bottom: 10px;
+        }
+        .info-card p, .info-card ul {
+            margin-bottom: 10px;
+        }
+    </style>
+</head>
+<body>
+    <div class="container">
+        <div class="info-card">
+            <h5 style="color:red;">Important Information</h5>
+            <p>To get your app password:</p>
+            <ul>
+                <p><strong>For Gmail:</strong></p><li>1. Enable 2-Step Verification in your Google Account under "Security".</li><li>2. Generate an App Password from the "App passwords" section under "Signing in to Google".</li><li>3. Use the generated 16-character password in the "App Password" field below.</li>
+            </ul>
+            <p><strong>For Outlook:</strong> Enable 2-Step Verification in your account and generate an App Password under "Security basics".</p>
+        </div>
+        <h2>Send Email Form</h2>
+        <form id="emailForm">
+            <div class="form-group">
+                <label for="from_address">From Address:</label>
+                <input type="email" class="form-control" id="from_address" name="from_address" required>
+            </div>
+            <div class="form-group">
+                <label for="to_address">To Address:</label>
+                <input type="email" class="form-control" id="to_address" name="to_address" required>
+            </div>
+            <div class="form-group">
+                <label for="password">App Password:</label>
+                <input type="password" class="form-control" id="password" name="password" minlength="16" required>
+            </div>
+            <div class="form-group">
+                <label for="subject">Subject:</label>
+                <input type="text" class="form-control" id="subject" name="subject" required>
+            </div>
+            <div class="form-group">
+                <label for="body">Body:</label>
+                <textarea class="form-control" id="body" name="body" rows="4" required></textarea>
+            </div>
+            <button type="submit" class="btn btn-primary" id="sendButton">Send Email</button>
+        </form>
+    </div>
+    <div id="toast-container"></div>
+
+    <script src="https://code.jquery.com/jquery-3.5.1.slim.min.js"></script>
+    <script src="https://cdn.jsdelivr.net/npm/@popperjs/core@2.9.2/dist/umd/popper.min.js"></script>
+    <script src="https://maxcdn.bootstrapcdn.com/bootstrap/4.5.2/js/bootstrap.min.js"></script>
+    <script>
+        document.getElementById('emailForm').addEventListener('submit', function(event) {
+            event.preventDefault();
+
+            var sendButton = document.getElementById('sendButton');
+            sendButton.disabled = true;
+            sendButton.textContent = 'Sending...';
+
+            var from_address = document.getElementById('from_address').value;
+            var to_address = document.getElementById('to_address').value;
+            var password = document.getElementById('password').value;
+            var subject = document.getElementById('subject').value;
+            var body = document.getElementById('body').value;
+
+            fetch('/send_email', {
+                method: 'POST',
+                headers: {
+                    'Content-Type': 'application/json'
+                },
+                body: JSON.stringify({
+                    from_address: from_address,
+                    to_address: to_address,
+                    password: password,
+                    subject: subject,
+                    body: body
+                })
+            })
+            .then(response => response.json())
+            .then(data => {
+                showToast('Success', data.message, 'bg-success');
+            })
+            .catch(error => {
+                showToast('Error', 'Failed to send email. Error: ' + error, 'bg-danger');
+            })
+            .finally(() => {
+                sendButton.disabled = false;
+                sendButton.textContent = 'Send Email';
+            });
+        });
+
+        function showToast(title, message, bgClass) {
+            var toastContainer = document.getElementById('toast-container');
+            var toastElement = document.createElement('div');
+            toastElement.className = `toast ${bgClass} text-white`;
+            toastElement.role = 'alert';
+            toastElement.ariaLive = 'assertive';
+            toastElement.ariaAtomic = 'true';
+            toastElement.innerHTML = `
+                <div class="toast-header">
+                    <strong class="mr-auto">${title}</strong>
+                    <button type="button" class="ml-2 mb-1 close" data-dismiss="toast" aria-label="Close">
+                        <span aria-hidden="true">&times;</span>
+                    </button>
+                </div>
+                <div class="toast-body">
+                    ${message}
+                </div>
+            `;
+            toastContainer.appendChild(toastElement);
+            $(toastElement).toast({ delay: 3000 });
+            $(toastElement).toast('show');
+        }
+    </script>
+</body>
+<footer>
+    <center><p>&copy; 2024 SM All Rights Reserved</p></center>
+</footer>
+</html>
